@@ -1,5 +1,5 @@
 #!/bin/bash
-
+echo "Running sitl_run.sh"
 set -e
 
 echo args: $@
@@ -22,7 +22,7 @@ echo model: $model
 echo src_path: $src_path
 echo build_path: $build_path
 
-working_dir=`pwd`
+working_dir=$PWD
 rootfs=$build_path/tmp/rootfs
 
 if [ "$chroot" == "1" ]
@@ -70,6 +70,8 @@ fi
 
 # kill process names that might stil
 # be running from last time
+pkill -x gzserver || true
+pkill -x gzclient || true
 pkill -x gazebo || true
 pkill -x px4 || true
 pkill -x px4_$model || true
@@ -99,18 +101,27 @@ then
 			# Set the plugin path so Gazebo finds our model and sim
 			source $src_path/Tools/setup_gazebo.bash ${src_path} ${build_path}
 
-			gzserver --verbose ${src_path}/Tools/sitl_gazebo/worlds/${model}.world &
+			echo "Starting ${model}.world"
+			source ~/mav-optical/devel/setup.bash
+			echo "GAZEBO_MODEL_PATH: $GAZEBO_MODEL_PATH"
+			echo "GAZEBO_PLUGIN_PATH: $GAZEBO_PLUGIN_PATH"
+			#export GAZEBO_RESOURCE_PATH="${src_path}/Tools/sitl_gazebo/":$GAZEBO_RESOURCE_PATH
+			roslaunch gazebo_ros empty_world.launch use_sim_time:=true verbose:=true world_name:="${HOME}/px4/Firmware/Tools/sitl_gazebo/worlds/${model}.world" &
+			#gzserver --verbose ${src_path}/Tools/sitl_gazebo/worlds/${model}.world  &
+			
 			SIM_PID=`echo $!`
+			
+			echo "${SIM_PID}"
 
-			if [[ -n "$HEADLESS" ]]; then
-				echo "not running gazebo gui"
-			else
+			#if [[ -n "$HEADLESS" ]]; then
+			#	echo "not running gazebo gui"
+			#else
 				# gzserver needs to be running to avoid a race. Since the launch
 				# is putting it into the background we need to avoid it by backing off
-				sleep 3
-				nice -n 20 gzclient --verbose &
-				GUI_PID=`echo $!`
-			fi
+			#	sleep 3
+			#	nice -n 20 gzclient --verbose &
+			#	GUI_PID=`echo $!`
+			#fi
 		fi
 	else
 		echo "You need to have gazebo simulator installed!"
