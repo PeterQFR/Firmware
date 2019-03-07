@@ -106,7 +106,11 @@ then
 			echo "GAZEBO_MODEL_PATH: $GAZEBO_MODEL_PATH"
 			echo "GAZEBO_PLUGIN_PATH: $GAZEBO_PLUGIN_PATH"
 			#export GAZEBO_RESOURCE_PATH="${src_path}/Tools/sitl_gazebo/":$GAZEBO_RESOURCE_PATH
+			
 			roslaunch gazebo_ros empty_world.launch use_sim_time:=true verbose:=true world_name:="${HOME}/px4/Firmware/Tools/sitl_gazebo/worlds/${model}.world" &
+			roslaunch coptersim realsensed435.launch &
+			
+			
 			#gzserver --verbose ${src_path}/Tools/sitl_gazebo/worlds/${model}.world  &
 			
 			SIM_PID=`echo $!`
