@@ -35,6 +35,8 @@
 #
 # We depend on our submodules, so we have to prevent attempts to
 # compile without it being present.
+SHELL += -x
+
 ifeq ($(wildcard .git),)
     $(error YOU HAVE TO USE GIT TO DOWNLOAD THIS REPOSITORY. ABORTING.)
 endif

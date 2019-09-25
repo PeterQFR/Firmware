@@ -99,7 +99,7 @@ then
 		if  [[ -z "$DONT_RUN" ]]
 		then
 			# Set the plugin path so Gazebo finds our model and sim
-			source $src_path/Tools/setup_gazebo.bash ${src_path} ${build_path}
+			source $src_path/Tools/setup_gazebo.bash "${src_path}" "$PWD/${build_path}"
 
 			echo "Starting ${model}.world"
 			source ~/mav-optical/devel/setup.bash
@@ -107,7 +107,9 @@ then
 			echo "GAZEBO_PLUGIN_PATH: $GAZEBO_PLUGIN_PATH"
 			#export GAZEBO_RESOURCE_PATH="${src_path}/Tools/sitl_gazebo/":$GAZEBO_RESOURCE_PATH
 			
-			roslaunch gazebo_ros empty_world.launch use_sim_time:=true verbose:=true world_name:="${HOME}/px4/Firmware/Tools/sitl_gazebo/worlds/${model}.world" &
+			#roslaunch gazebo_ros empty_world.launch use_sim_time:=true verbose:=true world_name:="${HOME}/px4/Firmware/Tools/sitl_gazebo/worlds/${model}.world" &
+			roslaunch gazebo_ros empty_world.launch use_sim_time:=true verbose:=true world_name:="${HOME}/mav-optical/src/coptersim/worlds/mtcrosby.world" &
+			
 			roslaunch coptersim realsensed435.launch &
 			
 			
